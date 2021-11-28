@@ -25,6 +25,7 @@
     </repositories>
 
     <build>
+        <outputDirectory>target</outputDirectory>
         <sourceDirectory>src/main/kotlin</sourceDirectory>
         <testSourceDirectory>src/test/kotlin</testSourceDirectory>
         <plugins>
