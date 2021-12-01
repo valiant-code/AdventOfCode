@@ -1,10 +1,11 @@
 object TimeUtil {
     private var start = System.currentTimeMillis()
     private var pt = 0
-    fun startClock(part: Int, function: () -> Unit) {
+    fun startClock(part: Int, functionToTime: () -> Unit) {
         pt = part
         start = System.currentTimeMillis()
-        function.invoke();
+        //execute the function, and then stop the timer
+        functionToTime();
         time();
     }
 

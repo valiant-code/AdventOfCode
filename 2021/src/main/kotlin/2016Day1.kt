@@ -5,11 +5,9 @@ private var currentPart = 0;
 
 private fun main() {
     //pt 1 - 307
-    var runPart1 = true
-//  runPart1 = false
     //pt 2 - 165
-    var runPart2 = true
-//    runPart2 = false
+    val runPart1 = true
+    val runPart2 = true
     if (runPart1) {
         TimeUtil.startClock(1, ::partOne)
     }
