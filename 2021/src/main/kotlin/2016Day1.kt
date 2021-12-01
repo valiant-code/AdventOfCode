@@ -1,8 +1,6 @@
 import objects.Direction
 import kotlin.math.absoluteValue
 
-private var currentPart = 0;
-
 private fun main() {
     //pt 1 - 307
     //pt 2 - 165
@@ -12,7 +10,7 @@ private fun main() {
         TimeUtil.startClock(1, ::partOne)
     }
     if (runPart2) {
-        TimeUtil.startClock(2, ::partOne)
+        TimeUtil.startClock(2, ::partTwo)
     }
 }
 
