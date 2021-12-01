@@ -9,18 +9,12 @@ private fun main() {
 //  runPart1 = false
     //pt 2 - 165
     var runPart2 = true
-    runPart2 = true
+//    runPart2 = false
     if (runPart1) {
-        currentPart = 1;
-        TimeUtil.startClock(1)
-        partOne()
-        TimeUtil.time()
+        TimeUtil.startClock(1, ::partOne)
     }
     if (runPart2) {
-        currentPart = 2;
-        TimeUtil.startClock(2)
-        partTwo()
-        TimeUtil.time()
+        TimeUtil.startClock(2, ::partOne)
     }
 }
 
@@ -33,7 +27,7 @@ private val turnMap = mapOf(
 );
 
 private fun partOne() {
-    val input = InputUtil.readFileAsStringList("day1/input.txt", ", ")
+    val input = InputUtil.readFileAsStringList("2016day1/input.txt", ", ")
         .map { str -> Direction(str[0], str.substring(1).toInt()) }
 
     var position = Pair(0, 0);
@@ -54,7 +48,7 @@ private fun partOne() {
 }
 
 private fun partTwo() {
-    val input = InputUtil.readFileAsStringList("day1/input.txt", ", ")
+    val input = InputUtil.readFileAsStringList("2016day1/input.txt", ", ")
         .map { str -> Direction(str[0], str.substring(1).toInt()) }
 
     var position = Pair(0, 0);

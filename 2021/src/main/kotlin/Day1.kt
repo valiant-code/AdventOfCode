@@ -1,23 +1,15 @@
 private var currentPart = 0;
 
 private fun main() {
-    //pt 1 - 307
-    var runPart1 = true
-//  runPart1 = false
-    //pt 2 - 165
-    var runPart2 = true
-    runPart2 = true
+    //pt 1 -
+    //pt 2 -
+    val runPart1 = true
+    val runPart2 = false
     if (runPart1) {
-        currentPart = 1;
-        TimeUtil.startClock(1)
-        partOne()
-        TimeUtil.time()
+        TimeUtil.startClock(1, ::partOne)
     }
     if (runPart2) {
-        currentPart = 2;
-        TimeUtil.startClock(2)
-        partTwo()
-        TimeUtil.time()
+        TimeUtil.startClock(2, ::partOne)
     }
 }
 

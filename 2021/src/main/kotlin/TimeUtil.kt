@@ -1,9 +1,11 @@
 object TimeUtil {
     private var start = System.currentTimeMillis()
     private var pt = 0
-    fun startClock(part: Int) {
+    fun startClock(part: Int, function: () -> Unit) {
         pt = part
         start = System.currentTimeMillis()
+        function.invoke();
+        time();
     }
 
     fun time() {
