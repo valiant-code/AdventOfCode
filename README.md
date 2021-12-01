@@ -1,2 +1,2 @@
-# adventOfCode-2020
-Doing daily challenges from https://adventofcode.com/2020
+# adventOfCode-2021
+Doing daily challenges from https://adventofcode.com/2021
