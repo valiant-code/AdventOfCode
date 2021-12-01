@@ -1,12 +1,12 @@
-var currentPart = 0;
+private var currentPart = 0;
 
-fun main() {
-    //pt 1 -
+private fun main() {
+    //pt 1 - 307
     var runPart1 = true
 //  runPart1 = false
-    //pt 2 -
+    //pt 2 - 165
     var runPart2 = true
-    runPart2 = false
+    runPart2 = true
     if (runPart1) {
         currentPart = 1;
         TimeUtil.startClock(1)
@@ -21,12 +21,13 @@ fun main() {
     }
 }
 
-fun partOne() {
-    var j: String = "null";
-    var res = InputUtil.readFileAsIntList("day1/input.txt");
-    j = res[0].toString();
+private fun partOne() {
+//    val input = InputUtil.readFileAsStringList("day1/input.txt", ", ").map { str -> Direction(str[0], str.substring(1).toInt()) }
 
-    println("Hello, World! and ${res.get(0)}")
+
+//    println("final position ${position} = ${position.first.absoluteValue + position.second.absoluteValue} blocks away")
 }
 
-fun partTwo() {}
+private fun partTwo() {
+
+}
