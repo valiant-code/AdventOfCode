@@ -1,14 +1,8 @@
 private fun main() {
     //pt 1 - 1374
     //pt 2 - 1418
-    val runPart1 = true
-    val runPart2 = true
-    if (runPart1) {
-        TimeUtil.startClock(1, ::partOne)
-    }
-    if (runPart2) {
-        TimeUtil.startClock(2, ::partTwo)
-    }
+    TimeUtil.startClock(1, ::partOne)
+    TimeUtil.startClock(2, ::partTwo)
 }
 
 private fun partOne() {
