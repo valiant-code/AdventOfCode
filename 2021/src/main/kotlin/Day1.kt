@@ -6,6 +6,10 @@ private fun main() {
 }
 
 private fun partOne() {
+    //interesting 1 line solutions from another user
+    //override fun part1() = input.windowed(2).count{it[1]>it[0]}
+    //override fun part2() = input.windowed(3).map{ it.sum() }.windowed(2).count{it[1]>it[0]}
+    //the windowed function is neat and fit this problem perfectly
     val input = InputUtil.readFileAsIntList("day1/input.txt");
     var count = 0;
 
@@ -21,6 +25,7 @@ private fun partOne() {
 private fun partTwo() {
     val input = InputUtil.readFileAsIntList("day1/input.txt");
     var count = 0;
+    input.map { it.plus(1) }
 
     var prevList = input.subList(0, 3);
     for (i in 4..input.size) {
