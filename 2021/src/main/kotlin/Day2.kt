@@ -40,14 +40,14 @@ private fun partTwo() {
     var aim = 0;
 
     val input = InputUtil.readFileAsStringList("day2/input.txt")
-        .map { Pair(it.substringBefore(" "), it.substringAfter(" ").toInt()) }
+        .map(::Instruction)
         .forEach {
-            when (it.first) {
+            when (it.command) {
                 "forward" -> {
-                    horizontal += it.second; depth += aim * it.second
+                    horizontal += it.value; depth += aim * it.value
                 }
-                "down" -> aim += it.second;
-                "up" -> aim -= it.second;
+                "down" -> aim += it.value;
+                "up" -> aim -= it.value;
             }
         }
 
