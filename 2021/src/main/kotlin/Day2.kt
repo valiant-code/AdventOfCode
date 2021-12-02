@@ -5,6 +5,11 @@ private fun main() {
     TimeUtil.startClock(2, ::partTwo)
 }
 
+private class Instruction(instructionString: String) {
+    val command = instructionString.substringBefore(" ");
+    val value = instructionString.substringAfter(" ").toInt();
+};
+
 private fun partOne() {
     //forward X increases the horizontal position by X units.
     //down X increases the depth by X units.
@@ -12,12 +17,12 @@ private fun partOne() {
     var depth = 0;
     var horizontal = 0;
     val input = InputUtil.readFileAsStringList("day2/input.txt")
-        .map { Pair(it.substringBefore(" "), it.substringAfter(" ").toInt()) }
+        .map(::Instruction)
         .forEach {
-            when (it.first) {
-                "forward" -> horizontal += it.second;
-                "down" -> depth += it.second;
-                "up" -> depth -= it.second;
+            when (it.command) {
+                "forward" -> horizontal += it.value;
+                "down" -> depth += it.value;
+                "up" -> depth -= it.value;
             }
         }
 
@@ -38,7 +43,9 @@ private fun partTwo() {
         .map { Pair(it.substringBefore(" "), it.substringAfter(" ").toInt()) }
         .forEach {
             when (it.first) {
-                "forward" -> { horizontal += it.second; depth += aim * it.second}
+                "forward" -> {
+                    horizontal += it.second; depth += aim * it.second
+                }
                 "down" -> aim += it.second;
                 "up" -> aim -= it.second;
             }
