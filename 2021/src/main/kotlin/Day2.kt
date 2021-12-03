@@ -5,10 +5,16 @@ private fun main() {
     TimeUtil.startClock(2, ::partTwo)
 }
 
-private class Instruction(instructionString: String) {
-    val command = instructionString.substringBefore(" ");
-    val value = instructionString.substringAfter(" ").toInt();
+private class SubmarineInstruction(
+    val command: String,
+    val value: Int) {
+    constructor(instructionString: String) : this(
+        instructionString.substringBefore(" "),
+        instructionString.substringAfter(" ").toInt());
 };
+private infix fun Int.greaterThanEquals(that: Int): Boolean = this > that;
+private fun Boolean.toInt() = if (this) 1 else 0
+
 
 private fun partOne() {
     //forward X increases the horizontal position by X units.
@@ -17,7 +23,7 @@ private fun partOne() {
     var depth = 0;
     var horizontal = 0;
     val input = InputUtil.readFileAsStringList("day2/input.txt")
-        .map(::Instruction)
+        .map(::SubmarineInstruction)
         .forEach {
             when (it.command) {
                 "forward" -> horizontal += it.value;
@@ -40,7 +46,7 @@ private fun partTwo() {
     var aim = 0;
 
     val input = InputUtil.readFileAsStringList("day2/input.txt")
-        .map(::Instruction)
+        .map(::SubmarineInstruction)
         .forEach {
             when (it.command) {
                 "forward" -> {
