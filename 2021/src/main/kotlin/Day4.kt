@@ -6,10 +6,17 @@ private fun main() {
 }
 
 data class BingoSpace(val row: Int, val col: Int, val num: Int, var marked: Boolean = false) {
+    //The problem says to ignore diagonals but afterwards I wanted to figure it out anyway
+    val isDiagonalA = row == col;     //0,0, 1,1, 2,2, 3,3, 4,4
+    val isDiagonalB = row + col == 4; //4,0, 3,1, 2,2, 1,3, 0,4
     fun markIfMatched(n: Int) {
         if (n == num) {
             marked = true
         }
+    }
+
+    override fun toString(): String {
+        return (if (!marked) "$num" else "*$num").padStart(3);
     }
 }
 
@@ -29,6 +36,13 @@ private class BingoBoard(val boardId: Int, boardString: String) {
     fun hasBingo(): Boolean {
         return spaces.filter { it.marked }.groupBy { it.col }.filter { it.value.size >= 5 }.any() ||
                 spaces.filter { it.marked }.groupBy { it.row }.filter { it.value.size >= 5 }.any()
+//        Diagonal logic is easy
+//                || spaces.filter { it.marked && it.isDiagonalA }.count() >= 5 ||
+//                spaces.filter { it.marked && it.isDiagonalB }.count() >= 5
+    }
+
+    override fun toString(): String {
+        return spaces.groupBy { it.row }.values.joinToString("\n") { it.toString() }
     }
 }
 
@@ -41,7 +55,7 @@ private fun partOne() {
     var lastNumberCalled = 0;
 
     for (num in numbersToDraw) {
-        boards.forEach { b -> b.spaces.filter { !it.marked }.forEach { it.markIfMatched(num) } }
+        boards.forEach { b -> b.spaces.filterNot(BingoSpace::marked).forEach { it.markIfMatched(num) } }
         firstBingo = boards.firstOrNull { it.hasBingo() };
         if (firstBingo != null) {
             lastNumberCalled = num;
@@ -51,8 +65,10 @@ private fun partOne() {
     // Start by finding the sum of all unmarked numbers on that board;
     val allUnmarkedSum = firstBingo!!.spaces.filter { !it.marked }.sumOf { it.num }
 
+
     // Then, multiply that sum by the number that was just called when the board won
     println("pt 1 answer: board #${firstBingo.boardId} ${allUnmarkedSum * lastNumberCalled}")
+    println("firstBingo:\n$firstBingo\n");
 }
 
 private fun partTwo() {
@@ -64,17 +80,14 @@ private fun partTwo() {
     var lastNumberCalled = 0;
 
     for (num in numbersToDraw) {
-        boards.forEach { b -> b.spaces.filter { !it.marked }.forEach { it.markIfMatched(num) } }
+        boards.forEach { b -> b.spaces.filterNot(BingoSpace::marked).forEach { it.markIfMatched(num) } }
         val winners = boards.filter { it.hasBingo() };
         if (winners.size >= boards.size) {
             lastBingo = winners.firstOrNull();
-        } else if (winners.isNotEmpty()) {
-            boards.removeAll(winners);
-        }
-
-        if (lastBingo != null) {
             lastNumberCalled = num;
             break;
+        } else if (winners.isNotEmpty()) {
+            boards.removeAll(winners);
         }
     }
 
@@ -82,6 +95,7 @@ private fun partTwo() {
     val allUnmarkedSum = lastBingo!!.spaces.filter { !it.marked }.sumOf { it.num }
 
     println("pt 2 answer: board #${lastBingo.boardId} ${allUnmarkedSum * lastNumberCalled}")
+    println("lastBingo:\n$lastBingo\n");
 }
 
 
