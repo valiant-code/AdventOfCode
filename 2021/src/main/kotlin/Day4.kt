@@ -5,18 +5,16 @@ private fun main() {
     TimeUtil.startClock(2, ::partTwo)
 }
 
+val doNothing = Unit;
+
 data class BingoSpace(val row: Int, val col: Int, val num: Int, var marked: Boolean = false) {
     //The problem says to ignore diagonals but afterwards I wanted to figure it out anyway
     val isDiagonalA = row == col;     //0,0, 1,1, 2,2, 3,3, 4,4
     val isDiagonalB = row + col == 4; //4,0, 3,1, 2,2, 1,3, 0,4
-    fun markIfMatched(n: Int) {
-        if (n == num) {
-            marked = true
-        }
-    }
+    fun markIfMatched(n: Int) = if (n == num) marked = true else doNothing;
 
     override fun toString(): String {
-        return (if (!marked) "$num" else "*$num").padStart(3);
+        return (if (!marked) "$num".padStart(3) else "*$num".padStart(3) colorize ConsoleColor.YELLOW_BOLD);
     }
 }
 
