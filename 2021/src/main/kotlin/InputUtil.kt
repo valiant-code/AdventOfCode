@@ -17,8 +17,7 @@ object InputUtil {
     }
 
     fun readFileAsIntList(filepath: String): List<Int> {
-        return readFileAsStringList(filepath).stream().map { s: String -> Integer.valueOf(s) }
-            .collect(Collectors.toList())
+        return readFileAsStringList(filepath).map { s: String -> Integer.valueOf(s) }
     }
 
     private fun readFile(path: String): String {
