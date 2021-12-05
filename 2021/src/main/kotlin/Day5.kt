@@ -10,15 +10,16 @@ data class Line(val start: Pair<Int, Int>, val end: Pair<Int, Int>) {
     val isHorizontal = start.second == end.second;
 }
 
+//easy function to make a pair that is 1 unit closer to another
 private fun Pair<Int, Int>.moveTowards(other: Pair<Int, Int>): Pair<Int, Int> {
     val x = when {
-        this.first == other.first -> { this.first }
-        this.first > other.first -> { this.first - 1 }
+        this.first == other.first -> this.first
+        this.first > other.first -> this.first - 1
         else -> this.first + 1
     };
     val y = when {
-        this.second == other.second -> { this.second }
-        this.second > other.second -> { this.second - 1 }
+        this.second == other.second -> this.second
+        this.second > other.second -> this.second - 1
         else -> this.second + 1
     };
     return x to y;
@@ -36,7 +37,7 @@ private fun partOne() {
         )
     }.filter { it.isVertical || it.isHorizontal }
 
-    val ventMap = HashMap<Pair<Int,Int>, Int>();
+    val ventMap = HashMap<Pair<Int, Int>, Int>();
 
     //0,9 -> 5,9
     //3,4 -> 1,4
@@ -48,14 +49,13 @@ private fun partOne() {
             ventMap.put(nextInsert, ventMap.getOrDefault(nextInsert, 0) + 1);
             lastInsert = nextInsert
         }
-
-        val j = 0;
     }
 
     //At how many points do at least two lines overlap?
     println("pt 1 answer: ${(ventMap.values.filter { it > 1 }.count()).toString().colorize(ConsoleColor.CYAN_BOLD)}")
 }
 
+//same exact code, without filtering down to only horizontal and vertical lines
 private fun partTwo() {
     //0,9 -> 5,9
     //8,0 -> 0,8
@@ -67,8 +67,9 @@ private fun partTwo() {
             Pair(vals.get(1).split(",")[0].toInt(), vals.get(1).split(",")[1].toInt())
         )
     }
+    //do not filter out diagonals
 
-    val ventMap = HashMap<Pair<Int,Int>, Int>();
+    val ventMap = HashMap<Pair<Int, Int>, Int>();
 
     //0,9 -> 5,9
     //3,4 -> 1,4
