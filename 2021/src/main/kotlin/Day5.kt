@@ -5,9 +5,17 @@ private fun main() {
     TimeUtil.startClock(2, ::partTwo)
 }
 
-data class Line(val start: Pair<Int, Int>, val end: Pair<Int, Int>) {
+data class VentLine(val start: Pair<Int, Int>, val end: Pair<Int, Int>) {
     val isVertical = start.first == end.first;
     val isHorizontal = start.second == end.second;
+
+    fun getPoints(): List<Pair<Int, Int>> {
+        val points = mutableListOf(start);
+        while(points.last() != end) {
+            points.add(points.last().moveTowards(end))
+        }
+        return points;
+    }
 }
 
 //easy function to make a pair that is 1 unit closer to another
@@ -31,28 +39,16 @@ private fun partOne() {
     val input = InputUtil.readFileAsStringList("day5/input.txt");
     val lines = input.map {
         val vals = it.split(" -> ")
-        Line(
+        VentLine(
             Pair(vals.get(0).split(",")[0].toInt(), vals.get(0).split(",")[1].toInt()),
             Pair(vals.get(1).split(",")[0].toInt(), vals.get(1).split(",")[1].toInt())
         )
     }.filter { it.isVertical || it.isHorizontal }
 
-    val ventMap = HashMap<Pair<Int, Int>, Int>();
-
-    //0,9 -> 5,9
-    //3,4 -> 1,4
-    lines.forEach {
-        ventMap.put(it.start, ventMap.getOrDefault(it.start, 0) + 1)
-        var lastInsert = it.start;
-        while (lastInsert != it.end) {
-            val nextInsert = lastInsert.moveTowards(it.end)
-            ventMap.put(nextInsert, ventMap.getOrDefault(nextInsert, 0) + 1);
-            lastInsert = nextInsert
-        }
-    }
+    val ans = lines.flatMap { it.getPoints() }.groupBy { it }.filter { it.value.size > 1 }.count()
 
     //At how many points do at least two lines overlap?
-    println("pt 1 answer: ${(ventMap.values.filter { it > 1 }.count()).toString().colorize(ConsoleColor.CYAN_BOLD)}")
+    println("pt 1 answer: ${ans.toString().colorize(ConsoleColor.CYAN_BOLD)}")
 }
 
 //same exact code, without filtering down to only horizontal and vertical lines
@@ -62,29 +58,18 @@ private fun partTwo() {
     val input = InputUtil.readFileAsStringList("day5/input.txt");
     val lines = input.map {
         val vals = it.split(" -> ")
-        Line(
+        VentLine(
             Pair(vals.get(0).split(",")[0].toInt(), vals.get(0).split(",")[1].toInt()),
             Pair(vals.get(1).split(",")[0].toInt(), vals.get(1).split(",")[1].toInt())
         )
     }
     //do not filter out diagonals
 
-    val ventMap = HashMap<Pair<Int, Int>, Int>();
+    val ans = lines.flatMap { it.getPoints() }.groupBy { it }.filter { it.value.size > 1 }.count()
 
-    //0,9 -> 5,9
-    //3,4 -> 1,4
-    lines.forEach {
-        ventMap.put(it.start, ventMap.getOrDefault(it.start, 0) + 1)
-        var lastInsert = it.start;
-        while (lastInsert != it.end) {
-            val nextInsert = lastInsert.moveTowards(it.end)
-            ventMap.put(nextInsert, ventMap.getOrDefault(nextInsert, 0) + 1);
-            lastInsert = nextInsert
-        }
-    }
 
     //At how many points do at least two lines overlap?
-    println("pt 2 answer: ${(ventMap.values.filter { it > 1 }.count()).toString().colorize(ConsoleColor.CYAN_BOLD)}")
+    println("pt 2 answer: ${ans.toString().colorize(ConsoleColor.CYAN_BOLD)}")
 }
 
 
