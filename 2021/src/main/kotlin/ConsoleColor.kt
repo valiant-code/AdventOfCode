@@ -72,10 +72,11 @@ enum class ConsoleColor(val colorCode: String) {
     CYAN_BACKGROUND_BRIGHT("\u001b[0;106m"), // CYAN
     WHITE_BACKGROUND_BRIGHT("\u001b[0;107m"); // WHITE
 
-    fun colorizeString(string: String, c: ConsoleColor, resetAfter: Boolean = true): String {
-        return "${c.colorCode}$string${if (resetAfter) RESET.colorCode else ""}"
+    fun colorizeString(string: String, resetAfter: Boolean = true): String {
+        return "${this.colorCode}$string${if (resetAfter) RESET.colorCode else ""}"
     }
 }
-infix fun String.colorize(c: ConsoleColor): String {
-    return c.colorizeString(this, c)
+
+infix fun<A> A.colorize(c: ConsoleColor): String {
+    return c.colorizeString(this.toString())
 }

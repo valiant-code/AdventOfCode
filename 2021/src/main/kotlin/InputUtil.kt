@@ -16,8 +16,8 @@ object InputUtil {
         return readFile(file.path).split(delimiter);
     }
 
-    fun readFileAsIntList(filepath: String): List<Int> {
-        return readFileAsStringList(filepath).map { s: String -> Integer.valueOf(s) }
+    fun readFileAsIntList(filepath: String, delimiter: String = "\n"): List<Int> {
+        return readFileAsStringList(filepath, delimiter).map { s: String -> Integer.valueOf(s) }
     }
 
     private fun readFile(path: String): String {
