@@ -33,7 +33,7 @@ private fun Pair<Int, Int>.moveTowards(other: Pair<Int, Int>): Pair<Int, Int> {
     return x to y;
 }
 
-private fun partOne() {
+private fun partOne(pt: Int = 1, considerDiagonals: Boolean = false) {
     //0,9 -> 5,9
     //8,0 -> 0,8
     val input = InputUtil.readFileAsStringList("day5/input.txt");
@@ -43,33 +43,17 @@ private fun partOne() {
             Pair(vals.get(0).split(",")[0].toInt(), vals.get(0).split(",")[1].toInt()),
             Pair(vals.get(1).split(",")[0].toInt(), vals.get(1).split(",")[1].toInt())
         )
-    }.filter { it.isVertical || it.isHorizontal }
+    }.filter { considerDiagonals || it.isVertical || it.isHorizontal }
 
     val ans = lines.flatMap { it.getPoints() }.groupBy { it }.filter { it.value.size > 1 }.count()
 
     //At how many points do at least two lines overlap?
-    println("pt 1 answer: ${ans.toString().colorize(ConsoleColor.CYAN_BOLD)}")
+    println("pt $pt answer: ${ans.toString().colorize(ConsoleColor.CYAN_BOLD)}")
 }
 
 //same exact code, without filtering down to only horizontal and vertical lines
 private fun partTwo() {
-    //0,9 -> 5,9
-    //8,0 -> 0,8
-    val input = InputUtil.readFileAsStringList("day5/input.txt");
-    val lines = input.map {
-        val vals = it.split(" -> ")
-        VentLine(
-            Pair(vals.get(0).split(",")[0].toInt(), vals.get(0).split(",")[1].toInt()),
-            Pair(vals.get(1).split(",")[0].toInt(), vals.get(1).split(",")[1].toInt())
-        )
-    }
-    //do not filter out diagonals
-
-    val ans = lines.flatMap { it.getPoints() }.groupBy { it }.filter { it.value.size > 1 }.count()
-
-
-    //At how many points do at least two lines overlap?
-    println("pt 2 answer: ${ans.toString().colorize(ConsoleColor.CYAN_BOLD)}")
+    partOne(2, true)
 }
 
 
