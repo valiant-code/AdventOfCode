@@ -17,7 +17,11 @@ object InputUtil {
     }
 
     fun readFileAsIntList(filepath: String, delimiter: String = "\n"): List<Int> {
-        return readFileAsStringList(filepath, delimiter).map { s: String -> Integer.valueOf(s) }
+        return readFileAsStringList(filepath, delimiter).map { s: String -> s.toInt() }
+    }
+
+    fun readFileAsLongList(filepath: String, delimiter: String = "\n"): List<Long> {
+        return readFileAsStringList(filepath, delimiter).map { s: String -> s.toLong() }
     }
 
     private fun readFile(path: String): String {
