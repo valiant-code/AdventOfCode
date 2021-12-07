@@ -1,8 +1,8 @@
 import kotlin.math.abs
 
 private fun main() {
-    //pt 1 - 374994
-    //pt 2 - 1686252324092
+    //pt 1 - 337488
+    //pt 2 - 89647695
     TimeUtil.startClock(1, ::partOne)
     TimeUtil.startClock(2, ::partTwo)
 }
@@ -12,17 +12,18 @@ private fun partOne(pt: Int = 1) {
     val input = InputUtil.readFileAsIntList("day7/input.txt", ",").sorted()
 
     var minMoves = Int.MAX_VALUE;
-    positionLoop@for (position in input.minOrNull()!!..input.maxOrNull()!!) {
+    var pos = Int.MAX_VALUE;
+    positionLoop@ for (position in input[0]..input.last()) {
         var moves = 0;
         for (num in input) {
             moves += abs(position - num)
-            if (moves > minMoves) break@positionLoop
+            if (moves > minMoves) break@positionLoop //because function is linear, we can break loop safely, otherwise continue
         }
         minMoves = moves;
+        pos = position;
     }
 
-
-    println("pt $pt answer: ${minMoves colorize ConsoleColor.CYAN_BOLD}")
+    println("pt $pt answer: ${minMoves colorize ConsoleColor.CYAN_BOLD} moves to position $pos")
 }
 
 fun Long.nthPartialSum(): Long {
@@ -35,17 +36,19 @@ private fun partTwo(pt: Int = 2) {
     val input = InputUtil.readFileAsLongList("day7/input.txt", ",").sorted()
 
     var minMoves = Long.MAX_VALUE;
-    inputLoop@for (position in input.minOrNull()!!..input.maxOrNull()!!) {
+    var pos = Long.MAX_VALUE;
+    //"fun" optimization might be to binary search instead of sequential..
+    positionLoop@ for (position in input[0]..input.last()) {
         var moves = 0L;
         for (num in input) {
             moves += (abs(position - num)).nthPartialSum()
-            if (moves > minMoves) break@inputLoop
+            if (moves > minMoves) break@positionLoop //because function is linear, we can break loop safely, otherwise continue
         }
         minMoves = moves;
+        pos = position;
     }
 
-
-    println("pt $pt answer: ${minMoves colorize ConsoleColor.CYAN_BOLD}")
+    println("pt $pt answer: ${minMoves colorize ConsoleColor.CYAN_BOLD} moves to position $pos")
 }
 
 
