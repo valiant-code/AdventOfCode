@@ -14,16 +14,14 @@ private fun isLowPoint(point: Pair<Int, Int>, value: Int, heightMap: Map<Pair<In
 
 fun getAdjacentPoints(point: Pair<Int, Int>): List<Pair<Int, Int>> {
     return listOf(
-        point.first + 1 to point.second,
-        point.first - 1 to point.second,
-        point.first to point.second + 1,
-        point.first to point.second - 1
+        point.copy(point.first + 1),
+        point.copy(point.first - 1),
+        point.copy(point.second + 1),
+        point.copy(point.second - 1)
     )
 }
 
-private fun getBasin(
-    startPoint: Pair<Int, Int>, heightMap: Map<Pair<Int, Int>, Int>
-): Set<Pair<Int, Int>> {
+private fun getBasin(startPoint: Pair<Int, Int>, heightMap: Map<Pair<Int, Int>, Int>): Set<Pair<Int, Int>> {
     if (heightMap.getOrDefault(startPoint, 9) == 9) return Collections.emptySet()
     val basinPoints = mutableSetOf(startPoint);
     val checkedPoints = mutableSetOf(startPoint);
@@ -31,12 +29,10 @@ private fun getBasin(
 
     while (uncheckedPoints.size > 1) {
         val next = uncheckedPoints.removeFirst();
-        if (!checkedPoints.contains(next)) {
-            checkedPoints.add(next)
-            if (heightMap.getOrDefault(next, 9) != 9) {
-                basinPoints.add(next);
-                uncheckedPoints.addAll(getAdjacentPoints(next).filterNot { checkedPoints.contains(it) })
-            }
+        checkedPoints.add(next)
+        if (heightMap.getOrDefault(next, 9) != 9) {
+            basinPoints.add(next);
+            uncheckedPoints.addAll(getAdjacentPoints(next).filterNot { checkedPoints.contains(it) })
         }
     }
 
@@ -66,7 +62,9 @@ private fun partTwo(pt: Int = 2) {
     val basins: MutableSet<Set<Pair<Int, Int>>> = mutableSetOf();
 
     for (point in heightMap.keys) {
+        //if we already have this point in any of our basins, continue
         if (basins.any { it.contains(point) }) continue
+        //otherwise, go look get its basin from the BFS method
         else basins.add(getBasin(point, heightMap))
     }
 
