@@ -14,10 +14,10 @@ private fun isLowPoint(point: Pair<Int, Int>, value: Int, heightMap: Map<Pair<In
 
 fun getAdjacentPoints(point: Pair<Int, Int>): List<Pair<Int, Int>> {
     return listOf(
-        point.copy(point.first + 1),
-        point.copy(point.first - 1),
-        point.copy(point.second + 1),
-        point.copy(point.second - 1)
+        point.first + 1 to point.second,
+        point.first - 1 to point.second,
+        point.first to point.second + 1,
+        point.first to point.second - 1,
     )
 }
 
