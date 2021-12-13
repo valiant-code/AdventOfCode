@@ -25,7 +25,7 @@ class Octopus(val coordinate: Pair<Int, Int>, var energyLevel: Int) {
     fun readyToFlash(step: Int) = step > lastFlashedStep && energyLevel > 9;
     fun incrementEnergy(step: Int) {
         if (step > lastFlashedStep) {
-            energyLevel += 1;
+            ++energyLevel
         }
     }
 
@@ -33,7 +33,8 @@ class Octopus(val coordinate: Pair<Int, Int>, var energyLevel: Int) {
         if (readyToFlash(step)) {
             energyLevel = 0;
             lastFlashedStep = step;
-            flashCounter += 1
+            flashCounter++
+
             return true;
         }
         return false;
