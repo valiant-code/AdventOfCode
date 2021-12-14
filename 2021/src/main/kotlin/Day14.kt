@@ -32,6 +32,12 @@ private fun partOne(pt: Int = 1) {
     println("pt $pt answer: ${answer colorize ConsoleColor.CYAN_BOLD}")
 }
 
+fun <A, B> List<Pair<A, B>>.mapMerging(conflictMerger: (B, B) -> B): Map<A, B> {
+    return this.groupBy { it.first }
+        .map { groupBy -> groupBy.key to groupBy.value.map { it.second }.reduce(conflictMerger) }
+        .toMap()
+}
+
 private fun partTwo(pt: Int = 2) {
     val input = InputUtil.readFileAsStringList("day14/input.txt", "\n\n")
     var polymerPairs: Map<String, Long> = input[0].toMutableList().windowed(2)
@@ -47,14 +53,13 @@ private fun partTwo(pt: Int = 2) {
 
     for (i in 1..40) {
         polymerPairs = polymerPairs.keys.flatMap { pair -> pairRules[pair]!!.map { newPair -> newPair to (polymerPairs[pair] ?: 0L) } }
-            .groupBy { it.first }
-            .map { groupBy -> groupBy.key to groupBy.value.sumOf { it.second } }
+            .mapMerging(Long::plus)
             .toMap()
     }
     val finishedMap = polymerPairs.entries
         .flatMap { entry -> entry.key.toList().map { it to entry.value } }
-        .groupBy { it.first }
-        .map { groupBy -> groupBy.key to (groupBy.value.sumOf { it.second } + if (groupBy.key in firstAndLast) 1 else 0) / 2 }
+        .mapMerging(Long::plus)
+        .map { it.key to (it.value + if (it.key in firstAndLast) 1 else 0) / 2 }
         .toMap();
     val counts = finishedMap.values.sortedDescending();
     val answer = counts.first() - counts.last()
