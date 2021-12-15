@@ -87,8 +87,8 @@ private fun partTwo(pt: Int = 2) {
             }
         visited.add(currNode.coordinate)
         notVisited.remove(currNode.coordinate)
-        if (currNode == destinationNode) break;
         nextNode = bigMap[notVisited.entries.minByOrNull { it.value }!!.key]
+        if (nextNode == destinationNode) break;
     }
 
     val answer = destinationNode.distanceFromStart
