@@ -25,34 +25,30 @@ private fun partOne(pt: Int = 1) {
 
 
 
-    var currPosition = 0 to 0;
-    var currNode = map[currPosition]!!
+    var currNode = map[0 to 0]!!
     var nextNode: CavernSquare? = currNode
     currNode.distanceFromStart = 0;
-    val destination = map.keys.maxOf { it.first } to map.keys.maxOf { it.second }
+    val maxRow = map.keys.maxOf { it.first }
+    val maxCol = map.keys.maxOf { it.second }
+    val destination = maxRow to maxCol
     var destinationNode = map[destination]!!
-    val visited = mutableSetOf<Pair<Int, Int>>();
+    val visited = HashSet<Pair<Int, Int>>(300000);
+    var notVisited = mutableMapOf<Pair<Int, Int>, Int>()
 
     //Dijkstra's algorithm https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm#Algorithm
-    while (nextNode != null && !visited.contains(destination)) {
+    while (nextNode != null) {
         currNode = nextNode
         getAdjacentPoints(currNode.coordinate)
-            .filter { map.containsKey(it) }
             .filterNot { visited.contains(it) }
-            .map { map[it]!! }
-            .forEach { it.chooseLowerDistance(currNode.distanceFromStart) }
+            .mapNotNull { map[it] }
+            .forEach {
+                if (it.chooseLowerDistance(currNode.distanceFromStart)) notVisited[it.coordinate] = it.distanceFromStart
+            }
         visited.add(currNode.coordinate)
-        nextNode = map.values.filterNot { visited.contains(it.coordinate) }
-            .minByOrNull { it.distanceFromStart }
+        notVisited.remove(currNode.coordinate)
+        if (currNode == destinationNode) break;
+        nextNode = map[notVisited.entries.minByOrNull { it.value }!!.key]
     }
-
-//    for (i in 0..destination.first) {
-//        println()
-//        for (j in 0..destination.second) {
-//            print(map[i to j])
-//        }
-//    }
-//    println()
 
     val answer = destinationNode.distanceFromStart
     println("pt $pt answer: ${answer colorize ConsoleColor.CYAN_BOLD}")
@@ -85,9 +81,7 @@ private fun partTwo(pt: Int = 2) {
         currNode = nextNode
         getAdjacentPoints(currNode.coordinate)
             .filterNot { visited.contains(it) }
-            .filter { it.first in 0..maxRow }
-            .filter { it.second in 0..maxCol }
-            .map { bigMap[it]!! }
+            .mapNotNull { bigMap[it] }
             .forEach {
                 if (it.chooseLowerDistance(currNode.distanceFromStart)) notVisited[it.coordinate] = it.distanceFromStart
             }
