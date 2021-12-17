@@ -62,7 +62,7 @@ private fun partOne(pt: Int = 1) {
     val targetMinY = numbers[2].value.toInt()
     val targetMaxY = numbers[3].value.toInt()
     var maxY = Int.MIN_VALUE;
-    val checkYRange = 1..(3 * abs(targetMaxY))
+    val checkYRange = 1..abs(targetMinY)
     var checkXRange = 1..targetMaxX;
 
     for (x in checkXRange) {
@@ -84,7 +84,7 @@ private fun partTwo(pt: Int = 2) {
     val targetMaxX = numbers[1].value.toInt()
     val targetMinY = numbers[2].value.toInt()
     val targetMaxY = numbers[3].value.toInt()
-    val checkYRange = targetMinY..(3 * abs(targetMaxY))
+    val checkYRange = targetMinY..abs(targetMinY)
     var checkXRange = 1..targetMaxX;
 
     var shotCounter = 0;
