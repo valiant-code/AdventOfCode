@@ -1,3 +1,5 @@
+import java.util.*
+
 private fun main() {
     //pt 1 - 986
     //pt 2 - 18234816469452
@@ -6,6 +8,13 @@ private fun main() {
 }
 
 fun <K, V> Map<K, V>.getKey(value: V) = entries.firstOrNull { it.value == value }?.key
+fun <A> Queue<A>.removeX(x: Int): Queue<A> {
+    val returnQueue: Queue<A> = LinkedList()
+    for (i in 1..x) {
+        returnQueue.add(this.remove())
+    }
+    return returnQueue;
+}
 
 private val hexMap = mapOf(
     "0" to "0000",
@@ -25,17 +34,6 @@ private val hexMap = mapOf(
     "E" to "1110",
     "F" to "1111",
 )
-
-
-private fun partOne(pt: Int = 1) {
-    val input = InputUtil.readFileAsStringList("day16/input.txt", "").filterNot { it.isEmpty() }
-    val bits = input.flatMap { hexMap[it]!!.toList() }
-
-    val packet = processPacket(bits).first;
-
-    val answer = packet.getVersionSum()
-    println("pt $pt answer: ${answer colorize ConsoleColor.CYAN_BOLD}")
-}
 
 private class Packet(
     val version: Int,
@@ -72,15 +70,12 @@ private class Packet(
 //Packets with type ID 6 are less than packets - their value is 1 if the value of the first sub-packet is less than the value of the second sub-packet; otherwise, their value is 0. These packets always have exactly two sub-packets.
 //Packets with type ID 7 are equal to packets - their value is 1 if the value of the first sub-packet is equal to the value of the second sub-packet; otherwise, their value is 0. These packets always have exactly two sub-packets.
 
-
-private fun processPacket(bits: List<Char>, startIndex: Int = 0): Pair<Packet, Int> {
-    var index = startIndex;
+private fun processPacket(bits: Queue<Char>): Packet {
     //the first three bits encode the packet version
     //the next three bits encode the packet type ID
-    val version = hexMap.getKey("0" + bits.subList(index, index + 3).joinToString(""))!!.toInt();
-    val typeId = hexMap.getKey("0" + bits.subList(index + 3, index + 6).joinToString(""))!!.toInt();
+    val version = hexMap.getKey("0${bits.remove()}${bits.remove()}${bits.remove()}")!!.toInt()
+    val typeId = hexMap.getKey("0${bits.remove()}${bits.remove()}${bits.remove()}")!!.toInt()
     val value: Long
-    index += 6;
 
     when (typeId) {
         //Packets with type ID 4 represent a literal value
@@ -89,55 +84,60 @@ private fun processPacket(bits: List<Char>, startIndex: Int = 0): Pair<Packet, I
             // To do this, the binary number is padded with leading zeroes until its length is a multiple of four bits,
             // and then it is broken into groups of four bits. Each group is prefixed by a 1 bit except the last group,
             // which is prefixed by a 0 bit
-            val valueBlocks = mutableListOf<List<Char>>()
-            for (block in bits.subList(index, bits.size).windowed(5, 5)) {
-                valueBlocks.add(block)
-                if (block[0] == '0') break;
+            val valueBlocks = mutableListOf<Char>()
+            var readingValues = true;
+            while (readingValues) {
+                if (bits.remove() == '0') readingValues = false;
+                valueBlocks.addAll(bits.removeX(4))
             }
-            index += valueBlocks.flatten().size;
-            value = valueBlocks.flatMap {
-                it.subList(1, it.size)
-            }.joinToString("").toLong(2)
-            return Packet(version, typeId, value) to index
+            value = valueBlocks.joinToString("").toLong(2)
+            return Packet(version, typeId, value)
         }
         else -> {
             //Every other type of packet (any packet with a type ID other than 4) represent an operator
             val packet = Packet(version, typeId, -2)
-            val lengthTypeId = bits[index++]
+            val lengthTypeId = bits.remove()
             if (lengthTypeId == '0') {
                 //If the length type ID is 0, then the next 15 bits are a number that represents
                 // the total length in bits of the sub-packets contained by this packet.
-                val length = bits.subList(index, index + 15).joinToString("").replaceBefore("1", "").toInt(2)
-                index += 15;
-                val subPacketsEnd = index + length;
-                while (index < subPacketsEnd) {
-                    val res = processPacket(bits.subList(index, bits.size))
-                    packet.subPackets.add(res.first)
-                    index += res.second
+                val length = bits.removeX(15).joinToString("").replaceBefore("1", "").toInt(2)
+                val targetLength = bits.size - length;
+                while (bits.size > targetLength) {
+                    val res = processPacket(bits)
+                    packet.subPackets.add(res)
                 }
             } else {
                 //If the length type ID is 1, then the next 11 bits are a number that represents
                 // the number of sub-packets immediately contained by this packet.
-                val length = bits.subList(index, index + 11).joinToString("").replaceBefore("1", "").toInt(2)
-                index += 11;
+                val length = bits.removeX(11).joinToString("").replaceBefore("1", "").toInt(2)
                 for (i in 1..length) {
-                    val res = processPacket(bits.subList(index, bits.size))
-                    packet.subPackets.add(res.first)
-                    index += res.second
+                    val res = processPacket(bits)
+                    packet.subPackets.add(res)
                 }
             }
-            return packet to index;
+            return packet
         }
     }
 
 }
 
+private fun partOne(pt: Int = 1) {
+    val input = InputUtil.readFileAsStringList("day16/input.txt", "").filterNot { it.isEmpty() }
+    val bits = input.flatMap { hexMap[it]!!.toList() }
+    val bitsQueue: Queue<Char> = LinkedList(bits)
+
+    val packet = processPacket(bitsQueue)
+
+    val answer = packet.getVersionSum()
+    println("pt $pt answer: ${answer colorize ConsoleColor.CYAN_BOLD}")
+}
 
 private fun partTwo(pt: Int = 2) {
     val input = InputUtil.readFileAsStringList("day16/input.txt", "").filterNot { it.isEmpty() }
     val bits = input.flatMap { hexMap[it]!!.toList() }
+    val bitsQueue: Queue<Char> = LinkedList(bits)
 
-    val packet = processPacket(bits).first;
+    val packet = processPacket(bitsQueue)
 
     val answer = packet.calcValue()
     println("pt $pt answer: ${answer colorize ConsoleColor.CYAN_BOLD}")
