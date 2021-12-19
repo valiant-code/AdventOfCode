@@ -42,11 +42,17 @@ private class SnailPair(
     }
 
     operator fun plus(other: SnailPair): SnailPair {
-        val parent = SnailPair(this, other);
-        this.parent = parent;
-        other.parent = parent;
-        parent.reduce()
-        return parent;
+        val thisCopy = this.deepCopy()
+        val otherCopy = other.deepCopy()
+        val newParent = SnailPair(thisCopy, otherCopy);
+        thisCopy.parent = newParent;
+        otherCopy.parent = newParent;
+        newParent.reduce()
+        return newParent;
+    }
+
+    fun deepCopy(): SnailPair {
+        return buildFromString(this.toString())
     }
 
     fun reduce() {
@@ -156,24 +162,21 @@ private fun partOne(pt: Int = 1) {
 }
 
 private fun partTwo(pt: Int = 2) {
-    val input = InputUtil.readFileAsStringList("day18/input.txt")
-
     var max = Long.MIN_VALUE;
-    for (line in input) {
-        input.filterNot { it == line }
-            .map { SnailPair.buildFromString(it) }
-            .forEach {
-                val curr = SnailPair.buildFromString(line)
-                val mag = (curr + it).calcMagnitude()
-                max = maxOf(max, mag)
-            }
-        input.filterNot { it == line }
-            .map { SnailPair.buildFromString(it) }
-            .forEach {
-                val curr = SnailPair.buildFromString(line)
-                val mag = (it + curr).calcMagnitude()
-                max = maxOf(max, mag)
-            }
+    val input = InputUtil.readFileAsStringList("day18/input.txt")
+    val permutationSet = mutableSetOf<String>()
+    input.forEach { line ->
+        input.filterNot { it == line }.forEach {
+            permutationSet.add("$line+$it")
+            permutationSet.add("$it+$line")
+        }
+    }
+
+    permutationSet.forEach {
+        max = maxOf(
+            max,
+            (SnailPair.buildFromString(it.split("+")[0]) + SnailPair.buildFromString(it.split("+")[1])).calcMagnitude()
+        )
     }
 
     val answer = max;
