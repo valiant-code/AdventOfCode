@@ -25,18 +25,24 @@ private class SnailPair(
         fun buildFromString(str: String): SnailPair {
             var line = str;
             val snailNodesMap = mutableMapOf<String, SnailPair>()
-            var currentPair: SnailPair = SnailPair(value = -12345);
-            var counter = 0;
-            while (line.contains('[')) {
+            var currentPair: SnailPair;
+            var pairId = 0;
+            do {
+                --pairId
+                //find the first pair that is a basic number E.G. [1,-2]
                 val match = simplePairRegex.find(line)!!
                 val firstVal = match.groupValues[1]
                 val secondVal = match.groupValues[2]
+                //Make a new node for that number, unless we have that number stored in our map (negative numbers only)
                 val firstNode = snailNodesMap.getOrElse(firstVal) { SnailPair(value = firstVal.toInt()) }
                 val secondNode = snailNodesMap.getOrElse(secondVal) { SnailPair(value = secondVal.toInt()) }
+                //make a new pair using the 2 child nodes
                 currentPair = SnailPair(firstNode, secondNode)
-                snailNodesMap[(--counter).toString()] = currentPair
-                line = simplePairRegex.replaceFirst(line, counter.toString())
-            }
+                //place that pair into our map, associating it with a counter using a negative number to id it
+                snailNodesMap[pairId.toString()] = currentPair
+                //before looping, replace the pair in the string with the negative number id
+                line = simplePairRegex.replaceFirst(line, pairId.toString())
+            } while (line.contains('['))
             return currentPair
         }
     }
@@ -164,8 +170,8 @@ private fun partOne(pt: Int = 1) {
 private fun partTwo(pt: Int = 2) {
     var max = Long.MIN_VALUE;
     val input = InputUtil.readFileAsStringList("day18/input.txt")
-    val permutationSet = mutableSetOf<Pair<SnailPair, SnailPair>>()
     val pairList = input.map { SnailPair.buildFromString(it) }
+    val permutationSet = mutableSetOf<Pair<SnailPair, SnailPair>>()
 
     pairList.forEach { node ->
         pairList.filterNot { otherNode -> otherNode == node }.forEach { otherNode ->
