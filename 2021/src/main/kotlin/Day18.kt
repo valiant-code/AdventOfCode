@@ -164,19 +164,20 @@ private fun partOne(pt: Int = 1) {
 private fun partTwo(pt: Int = 2) {
     var max = Long.MIN_VALUE;
     val input = InputUtil.readFileAsStringList("day18/input.txt")
-    val permutationSet = mutableSetOf<String>()
-    input.forEach { line ->
-        input.filterNot { it == line }.forEach {
-            permutationSet.add("$line+$it")
-            permutationSet.add("$it+$line")
+    val permutationSet = mutableSetOf<Pair<SnailPair, SnailPair>>()
+    val pairList = input.map { SnailPair.buildFromString(it) }
+
+    pairList.forEach { node ->
+        pairList.filterNot { otherNode -> otherNode == node }.forEach { otherNode ->
+            permutationSet.add(node to otherNode)
+            permutationSet.add(otherNode to node)
         }
     }
 
     permutationSet.forEach {
-        max = maxOf(
-            max,
-            (SnailPair.buildFromString(it.split("+")[0]) + SnailPair.buildFromString(it.split("+")[1])).calcMagnitude()
-        )
+        //Because SnailPair.plus() deep copies, the original objects remain intact,
+        // and we don't have to worry about re-using them
+        max = maxOf(max, (it.first + it.second).calcMagnitude())
     }
 
     val answer = max;
