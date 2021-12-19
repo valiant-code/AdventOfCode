@@ -28,7 +28,7 @@ private class SnailPair(
             var currentPair: SnailPair;
             var pairId = 0;
             do {
-                --pairId
+                --pairId //these negative numbers represent a node we have already parsed and stored in the map
                 //find the first pair that is a basic number E.G. [1,-2]
                 val match = simplePairRegex.find(line)!!
                 val firstVal = match.groupValues[1]
@@ -64,9 +64,9 @@ private class SnailPair(
     fun reduce() {
         while (true) {
             val seq = getListOfEndValueNodes().asSequence()
-            if (seq.any { it.reduceExplosion() })
+            if (seq.any { it.checkExplosion() })
                 continue;
-            else if (seq.any { it.reduceSplit() })
+            else if (seq.any { it.checkSplit() })
                 continue
             else break;
         }
@@ -79,7 +79,7 @@ private class SnailPair(
         return list;
     }
 
-    fun reduceExplosion(): Boolean {
+    fun checkExplosion(): Boolean {
         //If ANY pair is nested inside four pairs, the leftmost such pair explodes.
         if (this.parent?.parent?.parent?.parent?.parent != null) {
             this.parent!!.explode();
@@ -88,7 +88,7 @@ private class SnailPair(
         return false
     }
 
-    fun reduceSplit(): Boolean {
+    fun checkSplit(): Boolean {
         //If any regular number is 10 or greater, the leftmost such regular number splits.
         if (this.value != null && this.value!! >= 10) {
             this.split();
