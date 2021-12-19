@@ -2,8 +2,8 @@ import kotlin.math.ceil
 import kotlin.math.floor
 
 private fun main() {
-    //pt 1 -
-    //pt 2 -
+    //pt 1 - 3675
+    //pt 2 - 4650
     TimeUtil.startClock(1, ::partOne)
     TimeUtil.startClock(2, ::partTwo)
 }
@@ -51,7 +51,7 @@ private class SnailPair(
 
     fun reduce() {
         while (true) {
-            val seq = getListOfEndNodes().asSequence()
+            val seq = getListOfEndValueNodes().asSequence()
             if (seq.any { it.reduceExplosion() })
                 continue;
             else if (seq.any { it.reduceSplit() })
@@ -60,10 +60,10 @@ private class SnailPair(
         }
     }
 
-    fun getListOfEndNodes(): MutableList<SnailPair> {
+    fun getListOfEndValueNodes(): MutableList<SnailPair> {
         if (this.value != null) return mutableListOf(this)
-        val list = leftChild!!.getListOfEndNodes();
-        list.addAll(rightChild!!.getListOfEndNodes());
+        val list = leftChild!!.getListOfEndValueNodes();
+        list.addAll(rightChild!!.getListOfEndValueNodes());
         return list;
     }
 
@@ -135,25 +135,47 @@ private class SnailPair(
     }
 
     override fun toString() = if (this.value != null) this.value.toString() else "[$leftChild,$rightChild]"
+
     fun calcMagnitude(): Long {
-        //TODO
-        return -1;
+        //The magnitude of a regular number is just that number
+        if (value != null) return value!!.toLong()
+
+        //The magnitude of a pair is 3 times the magnitude of its left element
+        // plus 2 times the magnitude of its right
+        return (3 * leftChild!!.calcMagnitude()) + (2 * rightChild!!.calcMagnitude())
     }
 }
 
 private fun partOne(pt: Int = 1) {
     val input = InputUtil.readFileAsStringList("day18/input.txt")
-    //[1,2]
-    //[[3,4],5]
-    //[9,[8,7]]
-    //[[1,9],[8,5]]
     val pairList = input.map { SnailPair.buildFromString(it) }
 
-    val finalNumber = pairList.reduce {a, b -> a + b}
+    val finalNumber = pairList.reduce { a, b -> a + b }
     val answer = finalNumber.calcMagnitude()
     println("pt $pt answer: ${answer colorize ConsoleColor.CYAN_BOLD}")
 }
 
 private fun partTwo(pt: Int = 2) {
+    val input = InputUtil.readFileAsStringList("day18/input.txt")
 
+    var max = Long.MIN_VALUE;
+    for (line in input) {
+        input.filterNot { it == line }
+            .map { SnailPair.buildFromString(it) }
+            .forEach {
+                val curr = SnailPair.buildFromString(line)
+                val mag = (curr + it).calcMagnitude()
+                max = maxOf(max, mag)
+            }
+        input.filterNot { it == line }
+            .map { SnailPair.buildFromString(it) }
+            .forEach {
+                val curr = SnailPair.buildFromString(line)
+                val mag = (it + curr).calcMagnitude()
+                max = maxOf(max, mag)
+            }
+    }
+
+    val answer = max;
+    println("pt $pt answer: ${answer colorize ConsoleColor.CYAN_BOLD}")
 }
