@@ -48,9 +48,7 @@ private class SnailPair(
     }
 
     operator fun plus(other: SnailPair): SnailPair {
-        val thisCopy = this.deepCopy()
-        val otherCopy = other.deepCopy()
-        val newParent = SnailPair(thisCopy, otherCopy);
+        val newParent = SnailPair(this.deepCopy(), other.deepCopy());
         newParent.reduce()
         return newParent;
     }
