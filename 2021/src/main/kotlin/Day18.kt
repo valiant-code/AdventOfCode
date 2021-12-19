@@ -51,8 +51,6 @@ private class SnailPair(
         val thisCopy = this.deepCopy()
         val otherCopy = other.deepCopy()
         val newParent = SnailPair(thisCopy, otherCopy);
-        thisCopy.parent = newParent;
-        otherCopy.parent = newParent;
         newParent.reduce()
         return newParent;
     }
