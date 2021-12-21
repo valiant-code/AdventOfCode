@@ -77,14 +77,14 @@ enum class ConsoleColor(val colorCode: String) {
     }
 }
 
-infix fun<A> A.colorize(c: ConsoleColor): String {
+infix fun <A> A.colorize(c: ConsoleColor): String {
     return c.colorizeString(this.toString())
 }
 
-fun<A> A.colorizeIf(c: ConsoleColor, matchesString: String): String {
-    return this.colorizeIf(c) {str -> str == matchesString}
+fun <A> A.colorizeIf(c: ConsoleColor, matchesString: String): String {
+    return this.colorizeIf(c) { str -> str == matchesString }
 }
 
-fun<A> A.colorizeIf(c: ConsoleColor, predicate: (A) -> Boolean): String {
-    return if (predicate(this)) { c.colorizeString(this.toString()) } else { this.toString() }
+fun <A> A.colorizeIf(c: ConsoleColor, predicate: (A) -> Boolean): String {
+    return if (predicate(this)) c.colorizeString(this.toString()) else this.toString()
 }
